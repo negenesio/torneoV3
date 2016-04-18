@@ -10,7 +10,7 @@
 	}
 
 	#login .inner {
-		width: 340px;
+		width: 540px;
 		padding-bottom: 6px;
 		margin: 60px auto;
 		text-align: left;
@@ -41,7 +41,7 @@
 	}
 
 	#login .inner .cssform input[type='text'] {
-		width: 120px;
+		width: 140px;
 	}
 
 	#login .inner .cssform label {
@@ -49,7 +49,7 @@
 		float: left;
 		text-align: right;
 		margin-left: -105px;
-		width: 110px;
+		width: 200px;
 		padding-top: 3px;
 		padding-right: 10px;
 	}
@@ -75,7 +75,7 @@
 	}
 
 	#login .inner .text_ {
-		width: 120px;
+		width: 140px;
 	}
 
 	#login .inner .chk {
@@ -87,35 +87,46 @@
 <body>
 <div id='login'>
 	<div class='inner'>
+	<g:if test="${flash.params.info == 'Creacion de usuario exitoso.'}">
+		<div class='fheader'>Creacion de Usuario:</div>
+	</g:if>
+	<g:else>
 		<div class='fheader'><g:message code="springSecurity.login.header"/></div>
-
-		<g:if test='${flash.message}'>
-			<div class='login_message'>${flash.message}</div>
+	</g:else>
+		
+		<g:if test='${flash.params.error}'>
+			<div class='login_message'>${flash.params.error}</div>
 		</g:if>
-
-		<form action='${postUrl}' method='POST' id='loginForm' class='cssform' autocomplete='off'>
+		<g:if test='${flash.params.info && flash.params.info != 'Creacion de usuario exitoso.'}'>
+			<div class='message'>${flash.params.info}</div>
+		</g:if>
+		<g:if test='${flash.params.nuevoCodigo}'>
+			<div class='message'><g:link controller="player" action="crearNuevoCodigo">Enviar Nuevo Codigo</g:link></div>
+		</g:if>
+		<g:if test='${flash.params.nuevaClave}'>
+			<div class='message'><g:link controller="cuenta" action="inicioGenerarCodigoDesbloqueo">Cambiar Clave</g:link></div>
+		</g:if>
+		
+		<g:if test="${flash.params.info == 'Creacion de usuario exitoso.'}">
+			<div class='message'>${flash.params.info}. Verifique su EMAIL para poder activar su cuenta.</div>
+		</g:if>
+		<g:else>
+			<form action='${postUrl}' method='POST' id='loginForm' class='cssform' autocomplete='off'>
 			<p>
 				<label for='username'><g:message code="springSecurity.login.username.label"/>:</label>
-				<input type='text' class='text_' name='j_username' id='username'/>
+				<input type='text' class='text_' name='j_username' id='username' required="required"/>
 			</p>
 
 			<p>
 				<label for='password'><g:message code="springSecurity.login.password.label"/>:</label>
-				<input type='password' class='text_' name='j_password' id='password'/>
-			</p>
-
-			<p id="remember_me_holder">
-				<input type='checkbox' class='chk' name='${rememberMeParameter}' id='remember_me' <g:if test='${hasCookie}'>checked='checked'</g:if>/>
-				<label for='remember_me'><g:message code="springSecurity.login.remember.me.label"/></label>
-			</p>
-
-			<p>
-				<input type='submit' id="submit" value='${message(code: "springSecurity.login.button")}'/>
-			</p>
-			<p>
-				<g:link controller="player" action="create">Registrar nueva Cuenta</g:link>
+				<input type='password' class='text_' name='j_password' id='password' required="required"/>
+				<center><input type='submit' id="submit" value='${message(code: "springSecurity.login.button")}'/></center>
+				<br/>
+				<center><g:link controller="player" action="create">Registrar nueva Cuenta</g:link></center>
+				<center><g:link controller="cuenta" action="inicioGenerarCodigoDesbloqueo">¿Olvidaste tu Contraseña?</g:link></center>
 			</p>
 		</form>
+		</g:else>
 	</div>
 </div>
 <script type='text/javascript'>

@@ -16,11 +16,20 @@
 		<g:message code="player.password.label" default="Password" />
 		<span class="required-indicator">*</span>
 	</label>
-	<g:textField name="password" required="" value="${playerInstance?.password}"/>
+	<input type="password" id="password" name="password" required="" value="${playerInstance?.password}"/>
 
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'accountExpired', 'error')} ">
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'password', 'error')} required">
+	<label for="password">
+		<g:message code="player.password.label" default="Confirm Password" />
+		<span class="required-indicator">*</span>
+	</label>
+	<input type="password" name="confirm_password" id="confirm_password" required="" value=""/>
+
+</div>
+
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'accountExpired', 'error')}" style="display:none">
 	<label for="accountExpired">
 		<g:message code="player.accountExpired.label" default="Account Expired" />
 		
@@ -29,7 +38,7 @@
 
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'accountLocked', 'error')} ">
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'accountLocked', 'error')} " style="display:none">
 	<label for="accountLocked">
 		<g:message code="player.accountLocked.label" default="Account Locked" />
 		
@@ -47,7 +56,7 @@
 
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'enabled', 'error')} ">
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'enabled', 'error')} " style="display:none">
 	<label for="enabled">
 		<g:message code="player.enabled.label" default="Enabled" />
 		
@@ -56,7 +65,7 @@
 
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'fechaCreacion', 'error')} required">
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'fechaCreacion', 'error')} required" style="display:none">
 	<label for="fechaCreacion">
 		<g:message code="player.fechaCreacion.label" default="Fecha Creacion" />
 		<span class="required-indicator">*</span>
@@ -65,12 +74,12 @@
 
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'fechaNacimiento', 'error')} required">
-	<label for="fechaNacimiento">
-		<g:message code="player.fechaNacimiento.label" default="Fecha Nacimiento" />
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'email', 'error')} required">
+	<label for="email">
+		<g:message code="player.email.label" default="Email" />
 		<span class="required-indicator">*</span>
 	</label>
-	<g:datePicker name="fechaNacimiento" precision="day"  value="${playerInstance?.fechaNacimiento}"  />
+	<g:textField name="email" required="" value="${playerInstance?.email}"/>
 
 </div>
 
@@ -83,7 +92,16 @@
 
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'passwordExpired', 'error')} ">
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'fechaNacimiento', 'error')} required">
+	<label for="fechaNacimiento">
+		<g:message code="player.fechaNacimiento.label" default="Fecha Nacimiento" />
+		<span class="required-indicator">*</span>
+	</label>
+	<g:datePicker name="fechaNacimiento" precision="day"  value="${playerInstance?.fechaNacimiento}"  /> 
+
+</div>
+
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'passwordExpired', 'error')} " style="display:none">
 	<label for="passwordExpired">
 		<g:message code="player.passwordExpired.label" default="Password Expired" />
 		
@@ -91,4 +109,28 @@
 	<g:checkBox name="passwordExpired" value="${playerInstance?.passwordExpired}" />
 
 </div>
+
+<div class="fieldcontain ${hasErrors(bean: playerInstance, field: 'codigoDesbloqueo', 'error')} required" style="display:none">
+	<label for="codigoDesbloqueo">
+		<g:message code="player.codigoDesbloqueo.label" default="Codigo Desbloqueo" />
+		<span class="required-indicator">*</span>
+	</label>
+	<g:textField name="codigoDesbloqueo" value="none" />
+</div>
+
+<script>
+var password = document.getElementById("password");
+var confirm_password = document.getElementById("confirm_password");
+
+function validatePassword(){
+if(password.value != confirm_password.value) {
+  confirm_password.setCustomValidity("Las contraseñas no coinciden.");
+} else {
+  confirm_password.setCustomValidity('');
+}
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+</script>
 

@@ -18,6 +18,7 @@ import grails.converters.JSON
 
 import javax.servlet.http.HttpServletResponse
 
+import static org.springframework.http.HttpStatus.*
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.AccountExpiredException
 import org.springframework.security.authentication.CredentialsExpiredException
@@ -55,14 +56,21 @@ class LoginController {
 	 * Show the login page.
 	 */
 	def auth() {
-
+		if(!flash.params){
+			
+			def mensaje = ""
+			flash.params = [error:mensaje, info:mensaje]
+			println "PARAMS 1: " +flash.params
+		}
 		def config = SpringSecurityUtils.securityConfig
 
 		if (springSecurityService.isLoggedIn()) {
+			println "PARAMS 2: "+flash.params
 			redirect uri: config.successHandler.defaultTargetUrl
 			return
 		}
-
+	
+		println "PARAMS 3: " +flash.params
 		String view = 'auth'
 		String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
 		render view: view, model: [postUrl: postUrl,
@@ -73,6 +81,8 @@ class LoginController {
 	 * The redirect action for Ajax requests.
 	 */
 	def authAjax() {
+		def mensaje = ""
+		flash.params = [info:mensaje, error:mensaje, nuevoCodigo:mensaje]
 		response.setHeader 'Location', SpringSecurityUtils.securityConfig.auth.ajaxLoginFormUrl
 		response.sendError HttpServletResponse.SC_UNAUTHORIZED
 	}
@@ -105,21 +115,38 @@ class LoginController {
 
 		String msg = ''
 		def exception = session[WebAttributes.AUTHENTICATION_EXCEPTION]
+		println"SESSION: "+session
 		if (exception) {
 			if (exception instanceof AccountExpiredException) {
+				println "Usuario Expirada"
 				msg = g.message(code: "springSecurity.errors.login.expired")
 			}
 			else if (exception instanceof CredentialsExpiredException) {
-				msg = g.message(code: "springSecurity.errors.login.passwordExpired")
+				def mensaje = 'Debe realizar un cambio de Contraseña.'
+				flash.params = [error:mensaje, nuevoCodigo:"si"]
+				println "Clave Expirada"
+				redirect action:"auth", controller:"login"
+				return
 			}
 			else if (exception instanceof DisabledException) {
-				msg = g.message(code: "springSecurity.errors.login.disabled")
+				def mensaje = 'El usuario se encuentra desabilitado, Verifique su email para activar su cuenta o Solicite un nuevo Codigo'
+				flash.params = [error:mensaje, nuevoCodigo:"si"]
+				println "Usuario Desactivado"
+				redirect action:"auth", controller:"login"
+				return
 			}
 			else if (exception instanceof LockedException) {
+				println "Usuario Bloqueado"
 				msg = g.message(code: "springSecurity.errors.login.locked")
+				println "Usuario Bloqueado"
 			}
 			else {
-				msg = g.message(code: "springSecurity.errors.login.fail")
+				println "Login Incorrecto"
+				def mensaje = 'Login incorrecto. Verifique sus credenciales.'
+				flash.params = [error:mensaje]
+				println "Login Incorrecto"
+				redirect action:"auth", controller:"login"					
+				return
 			}
 		}
 
@@ -127,8 +154,11 @@ class LoginController {
 			render([error: msg] as JSON)
 		}
 		else {
-			flash.message = msg
-			redirect action: 'auth', params: params
+			def mensaje = 'Login incorrecto. Verifique sus credenciales.'
+			flash.params = [error:mensaje]
+			println "Login Incorrecto"
+			redirect action:"auth", controller:"login"
+			return
 		}
 	}
 
