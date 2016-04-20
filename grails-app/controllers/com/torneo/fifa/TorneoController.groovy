@@ -7,24 +7,28 @@ import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 
 @Transactional(readOnly = true)
-@Secured(['ROLE_ADMIN'])
+
 class TorneoController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+	@Secured(['ROLE_ADMIN'])
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         respond Torneo.list(params), model:[torneoInstanceCount: Torneo.count()]
     }
 
+	@Secured(['ROLE_ADMIN'])
     def show(Torneo torneoInstance) {
         respond torneoInstance
     }
 
+	@Secured(['IS_AUTHENTICATED_FULLY'])
     def create() {
         respond new Torneo(params)
     }
 
+	@Secured(['IS_AUTHENTICATED_FULLY'])
     @Transactional
     def save(Torneo torneoInstance) {
         if (torneoInstance == null) {
@@ -48,10 +52,12 @@ class TorneoController {
         }
     }
 
+	@Secured(['ROLE_ADMIN'])
     def edit(Torneo torneoInstance) {
         respond torneoInstance
     }
 
+	@Secured(['ROLE_ADMIN'])
     @Transactional
     def update(Torneo torneoInstance) {
         if (torneoInstance == null) {
@@ -75,6 +81,7 @@ class TorneoController {
         }
     }
 
+	@Secured(['ROLE_ADMIN'])
     @Transactional
     def delete(Torneo torneoInstance) {
 

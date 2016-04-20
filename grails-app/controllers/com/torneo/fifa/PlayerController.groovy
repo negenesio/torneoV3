@@ -75,7 +75,7 @@ class PlayerController {
             }
             '*' { respond playerInstance, [status: CREATED] }
         }
-		log.info "[save] Creacion de Player y Rol exitoso: \nUsername: "+playerInstance.username+"\nEmail: "+playerInstance.email+"\nRol: "+userRole.authority
+		log.info "[save] Creacion de Player y Rol exitoso: Username: "+playerInstance.username+". Email: "+playerInstance.email+". Rol: "+userRole.authority
     }
 
 	@Secured(['permitAll'])
@@ -249,5 +249,11 @@ class PlayerController {
 			redirect action:"auth", controller:"login"
 			return
 		}
+	}
+	
+	@Secured(['IS_AUTHENTICATED_FULLY'])
+	def datosUsuario(){
+		Player playerInstance = Player.findById(springSecurityService.getCurrentUser().id)
+		[playerInstance:playerInstance]
 	}
 }

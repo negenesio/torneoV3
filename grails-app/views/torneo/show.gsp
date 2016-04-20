@@ -23,6 +23,15 @@
 			</g:if>
 			<ol class="property-list torneo">
 			
+				<g:if test="${torneoInstance?.password}">
+				<li class="fieldcontain">
+					<span id="password-label" class="property-label"><g:message code="torneo.password.label" default="Password" /></span>
+					
+						<span class="property-value" aria-labelledby="password-label"><g:fieldValue bean="${torneoInstance}" field="password"/></span>
+					
+				</li>
+				</g:if>
+			
 				<g:if test="${torneoInstance?.cantidadPlayer}">
 				<li class="fieldcontain">
 					<span id="cantidadPlayer-label" class="property-label"><g:message code="torneo.cantidadPlayer.label" default="Cantidad Player" /></span>
@@ -32,11 +41,11 @@
 				</li>
 				</g:if>
 			
-				<g:if test="${torneoInstance?.descripcioon}">
+				<g:if test="${torneoInstance?.descripcion}">
 				<li class="fieldcontain">
-					<span id="descripcioon-label" class="property-label"><g:message code="torneo.descripcioon.label" default="Descripcioon" /></span>
+					<span id="descripcion-label" class="property-label"><g:message code="torneo.descripcion.label" default="Descripcion" /></span>
 					
-						<span class="property-value" aria-labelledby="descripcioon-label"><g:fieldValue bean="${torneoInstance}" field="descripcioon"/></span>
+						<span class="property-value" aria-labelledby="descripcion-label"><g:fieldValue bean="${torneoInstance}" field="descripcion"/></span>
 					
 				</li>
 				</g:if>
@@ -55,6 +64,15 @@
 					<span id="nombre-label" class="property-label"><g:message code="torneo.nombre.label" default="Nombre" /></span>
 					
 						<span class="property-value" aria-labelledby="nombre-label"><g:fieldValue bean="${torneoInstance}" field="nombre"/></span>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${torneoInstance?.owner}">
+				<li class="fieldcontain">
+					<span id="owner-label" class="property-label"><g:message code="torneo.owner.label" default="Owner" /></span>
+					
+						<span class="property-value" aria-labelledby="owner-label"><g:link controller="player" action="show" id="${torneoInstance?.owner?.id}">${torneoInstance?.owner?.username}</g:link></span>
 					
 				</li>
 				</g:if>

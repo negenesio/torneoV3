@@ -24,13 +24,17 @@
 			<thead>
 					<tr>
 					
+						<g:sortableColumn property="password" title="${message(code: 'torneo.password.label', default: 'Password')}" />
+					
 						<g:sortableColumn property="cantidadPlayer" title="${message(code: 'torneo.cantidadPlayer.label', default: 'Cantidad Player')}" />
 					
-						<g:sortableColumn property="descripcioon" title="${message(code: 'torneo.descripcioon.label', default: 'Descripcioon')}" />
+						<g:sortableColumn property="descripcion" title="${message(code: 'torneo.descripcion.label', default: 'Descripcion')}" />
 					
 						<g:sortableColumn property="fechaCreacion" title="${message(code: 'torneo.fechaCreacion.label', default: 'Fecha Creacion')}" />
 					
 						<g:sortableColumn property="nombre" title="${message(code: 'torneo.nombre.label', default: 'Nombre')}" />
+					
+						<th><g:message code="torneo.owner.label" default="Owner" /></th>
 					
 					</tr>
 				</thead>
@@ -38,13 +42,17 @@
 				<g:each in="${torneoInstanceList}" status="i" var="torneoInstance">
 					<tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 					
-						<td><g:link action="show" id="${torneoInstance.id}">${fieldValue(bean: torneoInstance, field: "cantidadPlayer")}</g:link></td>
+						<td><g:link action="show" id="${torneoInstance.id}">${fieldValue(bean: torneoInstance, field: "password")}</g:link></td>
 					
-						<td>${fieldValue(bean: torneoInstance, field: "descripcioon")}</td>
+						<td>${fieldValue(bean: torneoInstance, field: "cantidadPlayer")}</td>
+					
+						<td>${fieldValue(bean: torneoInstance, field: "descripcion")}</td>
 					
 						<td><g:formatDate date="${torneoInstance.fechaCreacion}" /></td>
 					
 						<td>${fieldValue(bean: torneoInstance, field: "nombre")}</td>
+					
+						<td>${fieldValue(bean: torneoInstance, field: "owner")}</td>
 					
 					</tr>
 				</g:each>

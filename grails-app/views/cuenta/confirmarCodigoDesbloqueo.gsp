@@ -111,17 +111,23 @@
 		<form action=cambiarContraseña controller="cuenta" method='POST' class='cssform' autocomplete='off'>
 			<p>
 				<label for='usuario'>Ingrese su Usuario:</label>
-				<g:if test='${flash.params.username}'>
-					<input type='text' class='text_' name='usuario' id='usuario' required="required" value="${flash.params.username}"/>
+				<g:if test='${flash.params.usuario}'>
+					<input type='text' class='text_' name='usuario' id='usuario' required="required" value="${flash.params.usuario}"/>
 				</g:if>
-				<g:if test='${params.username}'>
-					<input type='text' class='text_' name='usuario' id='usuario' required="required" value="${params.username}"/>
+				<g:if test='${params.usuario}'>
+					<input type='text' class='text_' name='usuario' id='usuario' required="required" value="${params.usuario}"/>
 				</g:if>
 
 			</p>
 			<p>
 				<label for='codigo'>Ingrese Codigo de Cambio:</label>
-				<input type='text' class='text_' name='codigo' id='codigo' required="required" value="${params.codigo}"/>
+				<g:if test='${flash.params.usuario}'>
+					<input type='text' class='text_' name='codigo' id='codigo' required="required" value="${flash.params.codigo}"/>
+				</g:if>
+				<g:if test='${params.usuario}'>
+					<input type='text' class='text_' name='codigo' id='codigo' required="required" value="${params.codigo}"/>
+				</g:if>
+				
 			</p>
 			<p>
 				<label for='password'>Contraseña Nueva:</label>
@@ -155,6 +161,8 @@ function validatePassword(){
 }
 password.onchange = validatePassword;
 confirm_password.onkeyup = validatePassword;
+
+alert("${flash.params}")
 </script>
 </body>
 </html>
