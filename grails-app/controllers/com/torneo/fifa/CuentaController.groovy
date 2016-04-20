@@ -8,6 +8,7 @@ import com.torneo.fifa.Player
 
 class CuentaController {
 	def mailService
+	def springSecurityService
 
 	def index() { }
 
@@ -25,18 +26,15 @@ class CuentaController {
 	@Secured(['permitAll'])
 	@Transactional
 	def generarCodigoDesbloqueo(){
-		//	def recuperarClave(){
-		println "generarCodigoDesbloqueo()"
 		Player instancePlayer = Player.findByEmail(params.email)
 		if(!instancePlayer){
-			println "El email no se encuentra registrado."
+			log.error "[generarCodigoDesbloqueo] El Email ingresado no se encuentra registrado: "+params.email
 			def mensaje = "El E-MAIL no se encuentra registrado."
 			flash.params = [error:mensaje]
 			redirect action:"inicioGenerarCodigoDesbloqueo", controller:"cuenta"
 			return
 		}
 		if(instancePlayer){
-			println "El E-MAIL ingresado es correcto."
 			char[] chars = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 			StringBuilder sb = new StringBuilder()
 			Random random = new Random()
@@ -48,12 +46,13 @@ class CuentaController {
 			instancePlayer.codigoDesbloqueo = output
 			instancePlayer.passwordExpired = true
 			if(!instancePlayer.save(flush:true)){
-				println "ERRO CRITICO no se pudo grabar."
+				log.error "[generarCodigoDesbloqueo] ERROR critico, no se puedo guardar el Nuevo codigo generado para el usuario: "+springSecurityService.getCurrentUser().username+"."
 				def mensaje = "Error en la configuracion de su cuenta. Comuniquese con un Administrador"					flash.params = [error:mensaje]
 				redirect action:"auth", controller:"login"
 				return
 			}else{
-				println "Se GRABO correctamente y se envio correctamente el email.."
+				
+				log.info "[generarCodigoDesbloqueo] Nuevo cofigo generado para el usuario: "+springSecurityService.getCurrentUser().username+". Se envio por email correctamente."
 				enviarNuevaCodigo(instancePlayer, output)
 				def mensaje = "Nuevo Codigo de Cambio generado correctamente, Verifique su Email"
 				flash.params = [info:mensaje, username:instancePlayer.username]
@@ -73,7 +72,7 @@ class CuentaController {
 			html g.render(template:'/mail/recuperarClave', model:[instancePlayer:instancePlayer, password:instancePlayer.password, codigo:codigo])
 			inline 'springsourceInlineImage', 'image/jpg', new File('./web-app/images/baner_torneo.png')
 		}
-		println "ENVIANDO EMAIL CON CODIGO NUEVO"
+		log.info "[enviarNuevaCodigo] Nuevo codigo enviado al usuario:"+springSecurityService.getCurrentUser().username+". Email: "+instancePlayer.email
 	}
 
 	//Vista donde solicita CODIGO DE DESBLOQUEO y usuario. (El codigo es enviado por email)
@@ -87,47 +86,42 @@ class CuentaController {
 
 	@Secured(['permitAll'])
 	def cambiarContraseña(){
-		println "[CAMBIO DE CLAVE] - Buscar usuario"
 		Player instancePlayer = Player.findByUsername(params.usuario)
 		if(!instancePlayer){
-			println "[CAMBIO DE CLAVE] - Usuario no encontrado"
+			log.error "[cambiarContraseña] El usuario ingresado: "+params.usuario+" no existe. Usuario Actual: "+springSecurityService.getCurrentUser().username
 			def mensaje = "Error en la configuracion de su cuenta. Comuniquese con un Administrador"
 			flash.params = [error:mensaje]
 			redirect action:"auth", controller:"login"
 			return
 		}
 		if(instancePlayer){
-			println "[CAMBIO DE CLAVE] - Usuario encontrado"
 			if(!instancePlayer.passwordExpired){
-				println "[CAMBIO DE CLAVE] - Password no expirado."
+				log.error "[cambiarContraseña] El cambio de clave para el usuario: "+params.usuario+", El usuario actual: "+springSecurityService.getCurrentUser().username+". Podria estar intentando hackear la cuenta."
 				def mensaje = "Su contraseña ya fue modificada."
 				flash.params = [error:mensaje]
 				redirect action:"auth", controller:"login"
 				return
 			}
 			if(instancePlayer.passwordExpired){
-				println "[CAMBIO DE CLAVE] - Password expirado."
 				if(instancePlayer.codigoDesbloqueo == params.codigo){
-					println "[CAMBIO DE CLAVE] - Codigo Ingresado Correcto"
 					instancePlayer.passwordExpired = false
 					instancePlayer.password = params.password
 					instancePlayer.codigoDesbloqueo = ""
-					println "[CAMBIO DE CLAVE] - Inicio GUARDADO"
 					if(!instancePlayer.save(flush:true)){
-						println "[CAMBIO DE CLAVE] - Guardado FALLO"
+						log.error "[cambiarContraseña] ERROR critico al intentar guardar el cambio de contraseña para el usuario: "+springSecurityService.getCurrentUser().username
 						def mensaje = "Error en la configuracion de su cuenta. Comuniquese con un Administrador"
 						flash.params = [error:mensaje]
 						redirect action:"auth", controller:"login"
 						return
 					}else{
-						println "[CAMBIO DE CLAVE] - GUARDADO Exitoso!"
+						log.info "[cambiarContraseña] El cambio de clave se realizo exitosamente para el usuario: "+springSecurityService.getCurrentUser().username
 						def mensaje = "Contraseña actualizada correctamente."
 						flash.params = [info:mensaje]
 						redirect action:"auth", controller:"login"
 						return
 					}
 				}else{
-					println "[CAMBIO DE CLAVE] - Error con el Codigo de Desbloqueo"
+					log.error "[cambiarContraseña] El codigo de desbloqueo ingresado no corresponde con el usuario actual. usuario ingresado: "+params.username+". Usuario Actual: "+springSecurityService.getCurrentUser().username
 					def mensaje = "Verifique el codigo de desbloqueo."
 					flash.params = [info:mensaje, usuario:instancePlayer.username]
 					redirect action:"confirmarCodigoDesbloqueo", controller:"cuenta"

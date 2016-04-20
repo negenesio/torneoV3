@@ -12,8 +12,10 @@
 		<div class="nav" role="navigation">
 			<ul>
 				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
-				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
+				<sec:ifAllGranted roles="ROLE_ADMIN">
+					<li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
+					<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
+				</sec:ifAllGranted>
 			</ul>
 		</div>
 		<div id="show-player" class="content scaffold-show" role="main">
@@ -28,15 +30,6 @@
 					<span id="username-label" class="property-label"><g:message code="player.username.label" default="Username" /></span>
 					
 						<span class="property-value" aria-labelledby="username-label"><g:fieldValue bean="${playerInstance}" field="username"/></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${playerInstance?.password}">
-				<li class="fieldcontain">
-					<span id="password-label" class="property-label"><g:message code="player.password.label" default="Password" /></span>
-					
-						<span class="property-value" aria-labelledby="password-label"><g:fieldValue bean="${playerInstance}" field="password"/></span>
 					
 				</li>
 				</g:if>
@@ -77,20 +70,20 @@
 				</li>
 				</g:if>
 			
-				<g:if test="${playerInstance?.fechaCreacion}">
-				<li class="fieldcontain">
-					<span id="fechaCreacion-label" class="property-label"><g:message code="player.fechaCreacion.label" default="Fecha Creacion" /></span>
-					
-						<span class="property-value" aria-labelledby="fechaCreacion-label"><g:formatDate date="${playerInstance?.fechaCreacion}" /></span>
-					
-				</li>
-				</g:if>
-			
 				<g:if test="${playerInstance?.fechaNacimiento}">
 				<li class="fieldcontain">
 					<span id="fechaNacimiento-label" class="property-label"><g:message code="player.fechaNacimiento.label" default="Fecha Nacimiento" /></span>
 					
-						<span class="property-value" aria-labelledby="fechaNacimiento-label"><g:formatDate date="${playerInstance?.fechaNacimiento}" /></span>
+						<span class="property-value" aria-labelledby="fechaNacimiento-label"><g:formatDate format="dd/MM/yyyy" date="${playerInstance?.fechaNacimiento}" /></span>
+					
+				</li>
+				</g:if>
+				
+				<g:if test="${playerInstance?.fechaCreacion}">
+				<li class="fieldcontain">
+					<span id="fechaCreacion-label" class="property-label"><g:message code="player.fechaCreacion.label" default="Fecha Creacion" /></span>
+					
+						<span class="property-value" aria-labelledby="fechaCreacion-label"><g:formatDate format="dd/MM/yyyy" date="${playerInstance?.fechaCreacion}" /></span>
 					
 				</li>
 				</g:if>
@@ -117,7 +110,9 @@
 			<g:form url="[resource:playerInstance, action:'delete']" method="DELETE">
 				<fieldset class="buttons">
 					<g:link class="edit" action="edit" resource="${playerInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+					<sec:ifAllGranted roles="ROLE_ADMIN">
+						<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+					</sec:ifAllGranted>
 				</fieldset>
 			</g:form>
 		</div>

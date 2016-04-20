@@ -109,7 +109,7 @@
 			<div class='message'>${flash.params.info}</div>
 		</g:if>
 		
-		<form action='generarCodigoDesbloqueo' controller="cuenta" method='POST' class='cssform' autocomplete='off'>
+		<form name="formulario" id="formulario" action='generarCodigoDesbloqueo' controller="cuenta" method='POST' class='cssform' autocomplete='off'>
 			<p>
 				<label for='email'>Ingrese su email:</label>
 				<input type='email' class='text_' name='email' id='email' required="required"/>
@@ -119,10 +119,18 @@
 <%--				<input type='text' class='text_' name='usuario' id='usuario' required="required"/>--%>
 <%--			</p>--%>
 			<p>
-				<input type='submit' id="submit" value='Enviar Codigo'/>
+				<input type='submit' id="submit" value='Enviar Codigo' onclick="checkInput();"/>
 			</p>
 		</form>
 	</div>
 </div>
+<script>
+function checkInput(){
+	
+	if(document.querySelector('#email').validity.valid){
+		waitingDialog.show('Cargando...', {dialogSize: 'sm', progressType: 'success'});
+	}
+}
+</script>
 </body>
 </html>

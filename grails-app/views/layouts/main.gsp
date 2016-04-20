@@ -20,7 +20,17 @@
 		<div align="right" id="loginHeader">
 			<g:loginControl />
 		</div>
-		<div id="grailsLogo" role="banner"><a href="http://grails.org"><asset:image src="grails_logo.png" alt="Grails"/></a></div>
+		<div id="grailsLogo" role="banner">
+			<a href="http://grails.org"><asset:image src="grails_logo.png" alt="Grails"/></a>
+			<g:if test="${sec.loggedInUserInfo(field:'username')}">
+				<span class="btn btn-success">Crear Nuevo Torneo</span>
+				<span class="btn btn-success">Mis Torneos</span>				
+				<span class="btn btn-success">Mis Estadisticas</span>
+				<g:link action="Player" action="edit" id="${sec.loggedInUserInfo(field:'id')}" class="btn btn-success">Modificar Mis Datos</g:link>
+			</g:if>
+				
+			
+		</div>
 		<g:layoutBody/>
 		<div class="footer" role="contentinfo"></div>
 		<div id="spinner" class="spinner" style="display:none;"><g:message code="spinner.alt" default="Loading&hellip;"/></div>

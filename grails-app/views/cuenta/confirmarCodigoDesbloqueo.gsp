@@ -89,6 +89,8 @@
 		font-size: 12px;
 		color: blue;
 	}
+	
+	
 	</style>
 </head>
 
@@ -131,12 +133,16 @@
 			</p>
 			<p>
 			<p>
-				<input type='submit' id="submit" value='Recuperar Cuenta'/>
+				<input type='submit' id="submit" value='Recuperar Cuenta' onclick="checkInput();"/>
 			</p>
 		</form>
 	</div>
 </div>
 <script>
+
+if(document.querySelector('#passwordConfirm').validity.valid && document.querySelector('#password').validity.valid && document.querySelector('#codigo').validity.valid &&  document.querySelector('#usuario').validity.valid){
+	waitingDialog.show('Cargando...', {dialogSize: 'sm', progressType: 'success'});
+}
 var password = document.getElementById("password");
 var confirm_password = document.getElementById("passwordConfirm");
 

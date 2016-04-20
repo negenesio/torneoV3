@@ -11,9 +11,10 @@ import java.text.SimpleDateFormat
 
 class PlayerController {
 	
-	private static Log log = LogFactory.getLog("pepito."+PlayerController.class.getName())
+	private static Log log = LogFactory.getLog("torneo."+PlayerController.class.getName())
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 	def mailService
+	def springSecurityService
 	
 	@Secured(['ROLE_ADMIN'])
     def index(Integer max) {
@@ -30,9 +31,14 @@ class PlayerController {
 		}
 	}
 
-	@Secured(['ROLE_ADMIN'])
+	@Secured(['permitAll'])
     def show(Player playerInstance) {
-        respond playerInstance
+		if(playerInstance.id == springSecurityService.getCurrentUser().id){
+			respond playerInstance
+		}else{
+			flash.params = [error:"No te pases de vivo... no puedes VER el usuario de otro."]
+			redirect action:"indexPlayer"
+		}
     }
 
 	@Secured(['permitAll'])
@@ -43,13 +49,16 @@ class PlayerController {
 	@Secured(['permitAll'])
     @Transactional
     def save(Player playerInstance) {
-		log.info "Inicio de creacion de Player."
         if (playerInstance == null) {
+			log.error "[save] Error Instancia null"
             notFound()
             return
         }
 
         if (playerInstance.hasErrors()) {
+			playerInstance.errors.allErrors.each {
+				println log.error "[save] Error Instancia con errores: "+it
+			}
             respond playerInstance.errors, view:'create'
             return
         }
@@ -57,7 +66,6 @@ class PlayerController {
         playerInstance.save flush:true
 		def userRole = Role.findOrSaveWhere(authority:"ROLE_USER")
 		UserRole.create(playerInstance, userRole, true)
-		log.info "Creacion de Player y Rol exitoso: \nUsername: "+playerInstance.username+"\nEmail: "+playerInstance.email+"\nRol: "+userRole.authority
 		enviarCodigo(playerInstance)
         request.withFormat {
             form multipartForm {
@@ -67,11 +75,21 @@ class PlayerController {
             }
             '*' { respond playerInstance, [status: CREATED] }
         }
+		log.info "[save] Creacion de Player y Rol exitoso: \nUsername: "+playerInstance.username+"\nEmail: "+playerInstance.email+"\nRol: "+userRole.authority
     }
 
 	@Secured(['permitAll'])
     def edit(Player playerInstance) {
-        respond playerInstance
+		
+		if(playerInstance.id == springSecurityService.getCurrentUser().id){
+			respond playerInstance
+		}else{
+			log.error "[edit] El usuario: "+springSecurityService.getCurrentUser().username+" intento editar a otro usuario: "+ playerInstance.id
+			flash.params = [error:"No te pases de vivo... no puedes editar el usuario de otro."]
+			redirect action:"indexPlayer"  
+		}
+		
+        
     }
 
 	@Secured(['permitAll'])
@@ -83,6 +101,9 @@ class PlayerController {
         }
 
         if (playerInstance.hasErrors()) {
+			playerInstance.errors.allErrors.each {
+				log.error "[update] Error Instancia con errores: "+it
+			}
             respond playerInstance.errors, view:'edit'
             return
         }
@@ -96,9 +117,10 @@ class PlayerController {
             }
             '*'{ respond playerInstance, [status: OK] }
         }
+		log.info "[update] El usuario: "+springSecurityService.getCurrentUser().username+" Se edito correctamente."
     }
 
-	@Secured(['permitAll'])
+	@Secured(['ROLE_ADMIN'])
     @Transactional
     def delete(Player playerInstance) {
 
@@ -139,7 +161,7 @@ class PlayerController {
 			inline 'springsourceInlineImage', 'image/jpg', new File('./web-app/images/baner_torneo.png')
 		}
 	
-		log.info "Codigo de Confirmacion enviado correctamente: nicolas.genesio@gmail.com. Token: "+instancePlayer.confirmCode
+		log.info "[enviarCodigo] Codigo de Confirmacion enviado correctamente: "+ instancePlayer.email+". Token: "+instancePlayer.confirmCode
 	}
 	
 	@Transactional
@@ -150,6 +172,7 @@ class PlayerController {
 		Player instancePlayer = Player.findByConfirmCode(id)
 
 		if(!instancePlayer){
+			log.error "[confirm] El usuario se encuentra deshabilitado, ID: "+id
 			def mensaje = 'El usuario se encuentra desabilitado, Verifique su email para activar su cuenta o Solicite un nuevo Codigo'
 			flash.params = [error:mensaje, nuevoCodigo:"si"]
 			redirect action:"auth", controller:"login"
@@ -160,6 +183,7 @@ class PlayerController {
 			def mensaje = 'La cuenta ya se encuentra habilitada.'
 			flash.params = [error:mensaje]
 			redirect action:"auth", controller:"login"
+			log.error "[confirm] El usuario ya se encontraba habilitado, ID: "+id
 			return
 		}
 		
@@ -169,12 +193,14 @@ class PlayerController {
 			if (!instancePlayer.save(flush: true)) {
 				def mensaje = 'Contactese con un administrador, error al Confirmar su cuenta.'
 				flash.params = [error:mensaje]
+				log.error "[confirm] ERROR critico al intentar habilitar el usuario, ID: "+id
 				redirect action:"auth", controller:"login"
 				return
 			} else{
 				def mensaje = 'Usuario Activado exitosamente.'
 				flash.params = [info:mensaje]
 				redirect action:"auth", controller:"login"
+				log.info "[confirm] Usuario Habilitado exitosamente, ID: "+id
 				return
 			}
 		}
@@ -195,6 +221,7 @@ class PlayerController {
 		Player instancePlayer = Player.findByEmail(params.email)
 		if(!instancePlayer){
 			def mensaje = "El email ingresado se encuentra registrado."
+			log.error "[nuevoCodigo] El Email ingresado no se encuentra registrado: "+params.email
 			flash.params = [error:mensaje]
 			redirect action:"auth", controller:"login"
 			return
@@ -202,18 +229,21 @@ class PlayerController {
 		if(!instancePlayer.enabled){
 			instancePlayer.confirmCode = UUID.randomUUID().toString()
 			if (!instancePlayer.save(flush: true)) {
+				log.error "[nuevoCodigo] ERROR critico al intentar guardar el nuevo codigo. Email: "+params.email+". Usuario: "+instancePlayer.username
 				def mensaje = 'Contactese con un administrador, error al Confirmar su cuenta.'
 				flash.params = [error:mensaje]
 				redirect action:"auth", controller:"login"
 				return
 			} else {
 				enviarCodigo(instancePlayer)
+				log.info "[nuevoCodigo] Nuevo cofigo generado y enviado exitosamente. Email: "+params.email+". Usuario: "+instancePlayer.username
 				def mensaje = 'Nuevo cofigo de confirmacion Enviado correctamente.'
 				flash.params = [info:mensaje]
 				redirect action:"auth", controller:"login"
 				return
 			}
 		}else{
+			log.error "[nuevoCodigo] El usuario ya se encuentra registrado. Usuario: "+instancePlayer.username
 			def mensaje = 'El usuario ya se encuentra Activado no es necesario el codigo.'
 			flash.params = [info:mensaje]
 			redirect action:"auth", controller:"login"

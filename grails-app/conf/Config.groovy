@@ -111,11 +111,11 @@ log4j = {
     appenders {
         console name: 'stdout', layout: pattern(conversionPattern: '%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{2}] %m%n')
 
-        rollingFile name:'pepitoAppender', file: "/tmp/pepito.log", append: true, 
+        rollingFile name:'torneoAppender', file: "/Users/negenesio/Desktop/log_torneo.log", append: true, 
             layout: pattern(conversionPattern: '%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{2}] %m%n')
     }
 
-    info pepitoAppender:'pepito', additivity:false
+    info torneoAppender:'torneo', additivity:false
 }
 
 

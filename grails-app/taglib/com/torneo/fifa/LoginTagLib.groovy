@@ -10,10 +10,9 @@ class LoginTagLib {
 		out << "<fieldset class=\"buttons\" align=\"right\">"
 		if(springSecurityService.getCurrentUser() != null){
 
-		  out << "<strong>Bienvenido:</strong> ${springSecurityService.getCurrentUser().username} "
+		  out << "<strong>Bienvenido:</strong> <u>${link(action:"edit", controller:"Player", id:"${springSecurityService.getCurrentUser().id}"){springSecurityService.getCurrentUser().username}}</u>"
 		  out << """${link(action:"index", controller:"logout"){"Cerrar Sesión"}}"""
 		  out << " "
-//		  out << """${link(action:"show", controller:"Usuario"){"Mi Perfil"}}"""
 		}
 		out << "</fieldset>"
 	  }

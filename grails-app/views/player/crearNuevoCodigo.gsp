@@ -119,7 +119,8 @@
 				<input type='text' class='text_' name='email' id='email' required="required"/>
 			</p>
 			<p>
-				<input type='submit' id="submit" value='Enviar Codigo'/>
+				<g:link class="btn btn-default" action="index" controller="logout">Cancelar</g:link>
+				<input type='submit' id="submit" class="btn btn-default" value='Enviar Codigo' onclick="waitingDialog.show('Cargando...', {dialogSize: 'sm', progressType: 'success'});"/>
 			</p>
 		</form>
 	</div>
