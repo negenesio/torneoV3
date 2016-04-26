@@ -10,15 +10,21 @@ class Torneo {
 	int cantidadPlayer
 	String password
 	Player owner
+	boolean publicado = false
 	
 	def beforeInsert() {
-		encodePassword()
+		if(password != null){
+			encodePassword()
+		}
+		
 	}
 	
 	def beforeUpdate() {
-		if (isDirty('password')) {
-			encodePassword()
-		}
+		if(password != null){
+			if (isDirty('password')) {
+				encodePassword()
+			}
+		}		
 	}
 	
 	protected void encodePassword() {

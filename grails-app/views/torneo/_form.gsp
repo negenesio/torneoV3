@@ -13,7 +13,7 @@
 		<g:message code="torneo.cantidadPlayer.label" default="Cantidad Player" />
 		<span class="required-indicator">*</span>
 	</label>
-	<g:field name="cantidadPlayer" type="number" min="1" value="1" required=""/>
+	<g:field name="cantidadPlayer" type="number" min="1" max="32" value="1" required=""/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: torneoInstance, field: 'descripcion', 'error')} required">
@@ -37,7 +37,7 @@
 		<g:message code="torneo.owner.label" default="Owner" />
 		<span class="required-indicator">*</span>
 	</label>
-	<g:select id="owner" name="owner.id" from="${com.torneo.fifa.Player.list()}" optionKey="id" optionValue="${{it.username}}" required="" value="" class="many-to-one" selected="true" disabled="disabled"/>
+	<g:select id="owner" name="owner.id" from="${com.torneo.fifa.Player.list()}" optionKey="id" optionValue="${{it.username}}" required="" value="${sec.loggedInUserInfo(field:'id')}" class="many-to-one" selected="true" disabled="disabled"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: torneoInstance, field: 'password', 'error')} required">
@@ -46,11 +46,16 @@
 	</label>
 	<input type="password" name="password" type="password" value="${torneoInstance?.password}"/>
 </div>
+
+<div class="fieldcontain ${hasErrors(bean: torneoInstance, field: 'publicado', 'error')}" style="display:none">
+	<label for="publicado">
+		<g:message code="player.publicado.label" default="Publicado" />
+		
+	</label>
+	<g:checkBox name="publicado" value="${torneoInstance?.publicado}" />
+</div>
 <script>
-var id_actual = $("#id_conectado").val();
-$("#owner").val(id_actual);
 $('#createTorneo').submit(function() {
-	alert("kuak");
     $('#owner').removeAttr('disabled');
 });
 </script>
