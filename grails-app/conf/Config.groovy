@@ -72,6 +72,7 @@ grails {
 
 
 grails.converters.encoding = "UTF-8"
+grails.views.gsp.encoding = "UTF-8" 
 // scaffolding templates configuration
 grails.scaffolding.templates.domainSuffix = 'Instance'
 
@@ -140,4 +141,4 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/cuenta/**':										['permitAll']
 ]
 grails.plugin.springsecurity.successHandler.defaultTargetUrl = "/player/indexPlayer"
-
+grails.plugin.springsecurity.logout.postOnly = false

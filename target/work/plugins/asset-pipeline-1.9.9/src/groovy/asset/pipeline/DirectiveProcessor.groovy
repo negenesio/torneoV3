@@ -249,13 +249,11 @@ class DirectiveProcessor {
             }
             else {
                 def relativeFileName = [ relativePath( file.file ), fileName ].join( AssetHelper.DIRECTIVE_FILE_SEPARATOR )
-                // println "Including Relative File: ${relativeFileName} - ${fileName}"
                 newFile = AssetHelper.fileForUri( relativeFileName, this.contentType, null, this.baseFile )
             }
 
             if( newFile ) {
                 if( !isFileInTree( newFile, tree ) ) {
-                    // println("Inserting File")
                     tree.tree << getDependencyTree( newFile )
                 }
             }

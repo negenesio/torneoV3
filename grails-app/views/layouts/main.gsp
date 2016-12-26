@@ -17,7 +17,7 @@
 		<g:layoutHead/>
 	</head>
 	<body>
-		<div align="right" id="loginHeader">
+		<div align="right" id="loginHeader" class="loginHeader">
 			<g:loginControl />
 		</div>
 		<div id="grailsLogo" role="banner">

@@ -6,7 +6,6 @@ includeTargets << grailsScript("_GrailsBootstrap")
 
 target(assetClean: "Cleans Compiled Assets Directory") {
 	// Clear compiled assets folder
-	println "Asset Precompiler Args ${argsMap}"
   def assetDir = new File(argsMap.target ?: "target/assets")
   if(assetDir.exists()) {
   	assetDir.deleteDir()

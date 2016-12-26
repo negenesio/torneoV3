@@ -1,5 +1,12 @@
-
+.loginHeader{
+	background-color: #45ADA8;
+}
+.errorRepetido{
+	color: red;
+	
+}
 #login {
+	background-color: #A2D6D3;
 	margin: 15px 0px;
 	padding: 0px;
 	text-align: center;
@@ -18,7 +25,7 @@
 }
 	#login .inner .fheader {
 	padding: 18px 26px 14px 26px;
-	background-color: #f7f7ff;
+	background-color: #C3D6D5;
 	margin: 0px 0 14px 0;
 	color: #2e3741;
 	font-size: 18px;
@@ -41,7 +48,7 @@
 	float: left;
 	text-align: right;
 	margin-left: -105px;
-	width: 200px;
+	width: 220px;
 	padding-top: 3px;
 	padding-right: 10px;
 }
@@ -88,6 +95,7 @@ html {
       -ms-text-size-adjust: 100%;
 }
 body {
+  background-color: #45ADA8;
   margin: 0;
 }
 article,
@@ -1164,7 +1172,7 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
-  background-color: #fff;
+  background-color: #45ADA8;
 }
 input,
 button,
@@ -3244,33 +3252,33 @@ fieldset[disabled] .btn-primary:focus,
 .btn-primary.disabled.focus,
 .btn-primary[disabled].focus,
 fieldset[disabled] .btn-primary.focus {
-  background-color: #337ab7;
-  border-color: #2e6da4;
+  background-color: #3C88CE;
+  border-color: black;
 }
 .btn-primary .badge {
-  color: #337ab7;
-  background-color: #fff;
+  color: white;
+  background-color: #3C88CE;
 }
 .btn-success {
-  color: #fff;
-  background-color: #5cb85c;
-  border-color: #4cae4c;
+  color: white;
+  background-color: #3C88CE;
+  border-color: #3C88CE;
 }
 .btn-success:focus,
 .btn-success.focus {
-  color: #fff;
-  background-color: #449d44;
+  color: white;
+  background-color: #3C88CE;
   border-color: #255625;
 }
 .btn-success:hover {
-  color: #fff;
-  background-color: #449d44;
+  color: white;
+  background-color: #64A5E0;
   border-color: #398439;
 }
 .btn-success:active,
 .btn-success.active,
 .open > .dropdown-toggle.btn-success {
-  color: #fff;
+  color: white;
   background-color: #449d44;
   border-color: #398439;
 }
@@ -6879,8 +6887,8 @@ html * {
 }
 
 body {
-	background: #ffffff;
-	color: #333333;
+	background: #A2D6D3;
+	color: black;
 	margin: 0 auto;
 	max-width: 960px;
 	overflow-x: hidden; /* prevents box-shadow causing a horizontal scrollbar in firefox when viewport < 960px wide */
@@ -6890,7 +6898,7 @@ body {
 }
 
 #grailsLogo {
-	background-color: #abbf78;
+	background-color: #45ADA8;
 }
 
 /* replace with .no-boxshadow body if you have modernizr available */
@@ -6907,7 +6915,7 @@ body {
 }
 
 a:link, a:visited, a:hover {
-	color: #48802c;
+	color: white;
 }
 
 a:hover, a:active {
@@ -6915,7 +6923,7 @@ a:hover, a:active {
 }
 
 h1 {
-	color: #48802c;
+	color: white;
 	font-weight: normal;
 	font-size: 1.25em;
 	margin: 0.8em 0 0.3em 0;
@@ -6950,11 +6958,10 @@ img {
 }
 
 .footer {
-	background: #abbf78;
+	background: #45ADA8;
 	color: #000;
 	clear: both;
 	font-size: 0.8em;
-	margin-top: 1.5em;
 	padding: 1em;
 	min-height: 1em;
 }
@@ -7125,7 +7132,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .required-indicator {
-	color: #48802C;
+	color: white;
 	display: inline-block;
 	font-weight: bold;
 	margin-left: 0.3em;
@@ -7364,7 +7371,7 @@ th:hover, tr:hover {
 /* ACTION BUTTONS */
 
 .buttons {
-	background-color: #efefef;
+	background-color: #45ADA8;
 	overflow: hidden;
 	padding: 0.3em;
 	   -moz-box-shadow: 0 0 3px 1px #aaaaaa;
@@ -7378,7 +7385,7 @@ th:hover, tr:hover {
 .buttons a {
 	background-color: transparent;
 	border: 0;
-	color: #666666;
+	color: #0F2169;
 	cursor: pointer;
 	display: inline-block;
 	margin: 0 0.25em 0;
@@ -7393,7 +7400,7 @@ th:hover, tr:hover {
 
 .buttons input:hover, .buttons input:focus,
 .buttons a:hover, .buttons a:focus {
-	background-color: #999999;
+	background-color: #3C88CE;
 	color: #ffffff;
 	outline: none;
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);

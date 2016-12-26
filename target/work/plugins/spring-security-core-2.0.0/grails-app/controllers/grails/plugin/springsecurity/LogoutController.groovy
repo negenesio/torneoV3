@@ -28,20 +28,15 @@ class LogoutController {
 	/**
 	 * Index action. Redirects to the Spring security logout uri.
 	 */
-	
-	def index = {
-		session.invalidate()
-		redirect controller:"login", action: "index", method: "GET"
+	def index() {
+
+		if (!request.post && SpringSecurityUtils.getSecurityConfig().logout.postOnly) {
+			response.sendError HttpServletResponse.SC_METHOD_NOT_ALLOWED // 405
+			return
+		}
+
+		// TODO put any pre-logout code here
+		redirectStrategy.sendRedirect request, response, SpringSecurityUtils.securityConfig.logout.filterProcessesUrl // '/j_spring_security_logout'
+		response.flushBuffer()
 	}
-//	def index() {
-//
-//		if (!request.post && SpringSecurityUtils.getSecurityConfig().logout.postOnly) {
-//			response.sendError HttpServletResponse.SC_METHOD_NOT_ALLOWED // 405
-//			return
-//		}
-//
-//		// TODO put any pre-logout code here
-//		redirectStrategy.sendRedirect request, response, SpringSecurityUtils.securityConfig.logout.filterProcessesUrl // '/j_spring_security_logout'
-//		response.flushBuffer()
-//	}
 }

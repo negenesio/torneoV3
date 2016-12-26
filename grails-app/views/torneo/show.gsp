@@ -12,7 +12,7 @@
 		<div class="nav" role="navigation">
 			<ul>
 				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<sec:ifAllGranted roles="ROLE_ADMIN"><li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li></sec:ifAllGranted>
+				<li><g:link class="list" action="index"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
 				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
 			</ul>
 		</div>
@@ -41,11 +41,29 @@
 				</li>
 				</g:if>
 			
+				<g:if test="${torneoInstance?.cantidadRegistrados}">
+				<li class="fieldcontain">
+					<span id="cantidadRegistrados-label" class="property-label"><g:message code="torneo.cantidadRegistrados.label" default="Cantidad Registrados" /></span>
+					
+						<span class="property-value" aria-labelledby="cantidadRegistrados-label"><g:fieldValue bean="${torneoInstance}" field="cantidadRegistrados"/></span>
+					
+				</li>
+				</g:if>
+			
 				<g:if test="${torneoInstance?.descripcion}">
 				<li class="fieldcontain">
 					<span id="descripcion-label" class="property-label"><g:message code="torneo.descripcion.label" default="Descripcion" /></span>
 					
 						<span class="property-value" aria-labelledby="descripcion-label"><g:fieldValue bean="${torneoInstance}" field="descripcion"/></span>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${torneoInstance?.enabled}">
+				<li class="fieldcontain">
+					<span id="enabled-label" class="property-label"><g:message code="torneo.enabled.label" default="Enabled" /></span>
+					
+						<span class="property-value" aria-labelledby="enabled-label"><g:formatBoolean boolean="${torneoInstance?.enabled}" /></span>
 					
 				</li>
 				</g:if>
@@ -72,7 +90,27 @@
 				<li class="fieldcontain">
 					<span id="owner-label" class="property-label"><g:message code="torneo.owner.label" default="Owner" /></span>
 					
-						<span class="property-value" aria-labelledby="owner-label"><g:link controller="player" action="show" id="${torneoInstance?.owner?.id}">${torneoInstance?.owner?.username}</g:link></span>
+						<span class="property-value" aria-labelledby="owner-label"><g:link controller="player" action="show" id="${torneoInstance?.owner?.id}">${torneoInstance?.owner?.encodeAsHTML()}</g:link></span>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${torneoInstance?.players}">
+				<li class="fieldcontain">
+					<span id="players-label" class="property-label"><g:message code="torneo.players.label" default="Players" /></span>
+					
+						<g:each in="${torneoInstance.players}" var="p">
+						<span class="property-value" aria-labelledby="players-label"><g:link controller="player" action="show" id="${p.id}">${p?.encodeAsHTML()}</g:link></span>
+						</g:each>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${torneoInstance?.publicado}">
+				<li class="fieldcontain">
+					<span id="publicado-label" class="property-label"><g:message code="torneo.publicado.label" default="Publicado" /></span>
+					
+						<span class="property-value" aria-labelledby="publicado-label"><g:formatBoolean boolean="${torneoInstance?.publicado}" /></span>
 					
 				</li>
 				</g:if>
@@ -80,8 +118,8 @@
 			</ol>
 			<g:form url="[resource:torneoInstance, action:'delete']" method="DELETE">
 				<fieldset class="buttons">
-					<sec:ifAllGranted roles="ROLE_ADMIN"><g:link class="edit" action="edit" resource="${torneoInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" /></sec:ifAllGranted>
+					<g:link class="edit" action="edit" resource="${torneoInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
+					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
 				</fieldset>
 			</g:form>
 		</div>

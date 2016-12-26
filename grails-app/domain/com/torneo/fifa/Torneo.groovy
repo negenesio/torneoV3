@@ -1,5 +1,7 @@
 package com.torneo.fifa
 
+import java.util.Date;
+
 class Torneo {
 	
 	transient springSecurityService
@@ -11,6 +13,10 @@ class Torneo {
 	String password
 	Player owner
 	boolean publicado = false
+	static hasMany = [players: Player]
+//	List players2
+	int cantidadRegistrados
+	boolean enabled = false
 	
 	def beforeInsert() {
 		if(password != null){

@@ -57,7 +57,7 @@ class PlayerController {
 
         if (playerInstance.hasErrors()) {
 			playerInstance.errors.allErrors.each {
-				println log.error "[save] Error Instancia con errores: "+it
+				log.error "[save] Error Instancia con errores: "+it
 			}
             respond playerInstance.errors, view:'create'
             return
@@ -217,7 +217,6 @@ class PlayerController {
 	@Secured(['permitAll'])
 	@Transactional
 	def nuevoCodigo() {
-		println "Busqueda de usuario con EMAIL"
 		Player instancePlayer = Player.findByEmail(params.email)
 		if(!instancePlayer){
 			def mensaje = "El email ingresado se encuentra registrado."

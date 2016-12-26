@@ -12,7 +12,7 @@ class LoginTagLib {
 		
 //		out << "<g:set var='x' value='"+${springSecurityService.getCurrentUser()}+"'/>"
 		out << "<strong>Bienvenido:</strong> <u>${link(action:"edit", controller:"Player", id:"${springSecurityService.getCurrentUser().id}"){springSecurityService.getCurrentUser().username}}</u>"
-		out << """${link(action:"index", controller:"logout"){"Cerrar Sesión"}}"""
+		out << """${link(action:"index", controller:"logout", method:"POST"){"Cerrar Sesión"}}"""
 		out << "<input type='hidden' value='${springSecurityService.getCurrentUser().id}' id='id_conectado'/>"
 		out << "<input type='hidden' value='${springSecurityService.getCurrentUser().username}' id='username_conectado'/>"
 		out << "<input type='hidden' value='${springSecurityService.getCurrentUser().email}' id='email_conectado'/>"

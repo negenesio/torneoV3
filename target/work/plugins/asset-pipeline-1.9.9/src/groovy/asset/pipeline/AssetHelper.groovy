@@ -77,7 +77,6 @@ class AssetHelper {
 
     @Deprecated
     static artefactForFile(file) {
-        println "DEPRECATION WARNING: AssetHelper.artefactForFile() has been renamed to AssetHelper.assetForFile()."
         AssetHelper.assetForFile(file)
     }
 

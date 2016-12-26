@@ -28,14 +28,101 @@
 				</g:eachError>
 			</ul>
 			</g:hasErrors>
-			<g:form url="[resource:torneoInstance, action:'save']" name="createTorneo" id="createTorneo">
+		
+			<g:form action="torneo" action="generarPlayers" name="createTorneo" id="createTorneo">
 				<fieldset class="form">
 					<g:render template="form"/>
 				</fieldset>
+			<div id="crearTorneo_div" style="display:block">	
 				<fieldset class="buttons">
-					<g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
+					<g:submitButton name="create" id="buttonCreate" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
 				</fieldset>
+			</div>			
 			</g:form>
+		
+		<div id="registracionTorneo">
 		</div>
+		</div>
+		<script>
+		$("#buttonCreate").click(function() {
+			if(document.querySelector('#nombre').validity.valid && document.querySelector('#cantidadPlayer').validity.valid && document.querySelector('#descripcion').validity.valid){
+				document.getElementById('createTorneo').onsubmit = function() {
+					var cantidadPlayer = $("#cantidadPlayer").val();
+					var descripcion = $("#").val();
+					var nombre = $("#nombre").val();
+					var password = $("#password").val();
+					<g:remoteFunction controller="torneo" action="registracionTorneo"  params="\'cantidadPlayer=\' + cantidadPlayer +  \'&nombre=\' + nombre + \'&descripcion=\' + descripcion + \'&password=\' + password" update="registracionTorneo"/>
+					document.getElementById("crearTorneo_div").style.display = "none";
+					waitingDialog.show('Cargando...', {dialogSize: 'sm', progressType: 'success'});
+					setTimeout(function () {waitingDialog.hide();}, 1500);
+					 $("#nombre").prop("readonly", true);
+					 $("#cantidadPlayer").prop("readonly", true);
+					 $("#descripcion").prop("readonly", true);
+					 $("#password").prop("readonly", true);
+					 
+				    return false;
+				}
+			}
+		});
+
+		$('#guardarTorneo').submit(function() {
+		    $('#owner').removeAttr('disabled');
+		});
+
+
+		$("#buttonCreateResumen").click(function() {
+			alert("Boton Actualizar");
+			if(document.querySelector('#resumenNombre').validity.valid && document.querySelector('#resumenCantidadPlayer').validity.valid && document.querySelector('#resumenDescripcion').validity.valid){
+				document.getElementById('resumenCreateTorneo').onsubmit = function() {
+					var cantidadPlayer = $("#resumenCantidadPlayer").val();
+					var descripcion = $("#resumenDescripcion").val();
+					var nombre = $("#resumenNombre").val();
+					var password = $("#resumenPassword").val();
+					<g:remoteFunction controller="torneo" action="registracionTorneo"  params="\'cantidadPlayer=\' + cantidadPlayer +  \'&nombre=\' + nombre + \'&descripcion=\' + descripcion + \'&password=\' + password" update="registracionTorneo"/>
+					document.getElementById("crearTorneo_div").style.display = "none";
+				    return false;
+				}
+			}
+		});
+
+		function validarRegistracion(){
+			var selects = $(".selectPlayer");
+			for(var i=0; i<selects.length; i++){
+				for(var j=0; j<selects.length; j++){
+					if(i != j){
+						if($(".selectPlayer")[i].value == $(".selectPlayer")[j].value && $(".selectPlayer")[i].value != 'null'){
+							$(".selectPlayer")[i].setCustomValidity("Repetido");
+							$(".selectPlayer")[j].setCustomValidity("Repetido");
+							$(".errorRepetido")[i].style.display = "block";
+							$(".errorRepetido")[j].style.display = "block";
+							return false;
+						}
+					}
+				
+				$(".selectPlayer")[i].setCustomValidity("");
+				$(".selectPlayer")[j].setCustomValidity("");
+				$(".errorRepetido")[i].style.display = "none";
+				$(".errorRepetido")[j].style.display = "none";
+				}
+			}
+		}
+		
+		function checkInput(){
+			var aux = false;
+			var selects = $(".selectPlayer");
+			for(var i=0; i<selects.length; i++){
+				if(selects[i].validity.valid){
+						aux = true;
+					}else{
+						aux = false;
+						return;
+					}
+				}
+				if(aux){
+					waitingDialog.show('Cargando...', {dialogSize: 'sm', progressType: 'success'});
+				}
+			}
+			
+		</script>
 	</body>
 </html>

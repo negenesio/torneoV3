@@ -25,7 +25,6 @@ class JornadaController {
 //				eq('id', params.torneoRegistracionInstanceId.toLong())
 //			}
 //		}
-//		println jornadaInstanceList.size()
 //		respond jornadaInstanceList, model:[jornadaInstanceCount: Jornada.count()]
 //	}
 

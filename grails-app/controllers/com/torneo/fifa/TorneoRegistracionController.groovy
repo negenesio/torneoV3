@@ -25,28 +25,59 @@ class TorneoRegistracionController {
         respond new TorneoRegistracion(params)
     }
 
-    @Transactional
-    def save(TorneoRegistracion torneoRegistracionInstance) {
-        if (torneoRegistracionInstance == null) {
-            notFound()
-            return
-        }
+ @Transactional
+	def save(TorneoRegistracion torneoRegistracionInstance) {
 
-        if (torneoRegistracionInstance.hasErrors()) {
-            respond torneoRegistracionInstance.errors, view:'create'
-            return
-        }
+		def criteria = Player.createCriteria()
+		def player_lista = criteria.list{
+			inList('id', params.playerInvitacion.collect { it.toLong() })
+		}
 
-        torneoRegistracionInstance.save flush:true
+		torneoRegistracionInstance.estado = Estado.findOrSaveWhere(descripcion:'CREADO')
+		def lista_player = params.list('playerInvitacion')
+		torneoRegistracionInstance.players = player_lista
+		Torneo torneo = Torneo.findById(params.torneoInstance)
+		torneoRegistracionInstance.torneo = torneo
+		torneoRegistracionInstance.cantidadRegistrados = player_lista.size()
+		torneoRegistracionInstance.estado = Estado.findByDescripcion("CREADO")
+		
+		if (torneoRegistracionInstance == null) {
+			notFound()
+			return
+		}
+		
+		torneoRegistracionInstance.save flush:true
+		
+		if(torneoRegistracionInstance.cantidadRegistrados == torneo.cantidadPlayer){
+			torneoRegistracionInstance.estado = Estado.findByDescripcion("EN PROCESO")
+			
+//			//GENERAR CRUCES - (VERIFICAR SI HACE FALTA HACER ALGO EN EL UPDATE TAMBIEN).
+//			CruceController cruceController = new CruceController()
+//			cruceController.generarCruce(lista_player, torneoRegistracionInstance)
+//			torneoRegistracionInstance.save flush:true
+//			redirect action:'index', controller:'jornada', params:[torneoRegistracionInstanceId:torneoRegistracionInstance.id]
+			return
+			
+		}else{
+			torneoRegistracionInstance.estado = Estado.findByDescripcion("ESPERANDO PLAYERS")
+			torneoRegistracionInstance.save flush:true
+		}
+		
+		
+		
+		if (torneoRegistracionInstance.hasErrors()) {
+			respond torneoRegistracionInstance.errors, view:'create'
+			return
+		}
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'torneoRegistracion.label', default: 'TorneoRegistracion'), torneoRegistracionInstance.id])
-                redirect torneoRegistracionInstance
-            }
-            '*' { respond torneoRegistracionInstance, [status: CREATED] }
-        }
-    }
+		request.withFormat {
+			form multipartForm {
+				flash.message = message(code: 'default.created.message', args: [message(code: 'torneoRegistracion.label', default: 'TorneoRegistracion'), torneoRegistracionInstance.id])
+				redirect torneoRegistracionInstance
+			}
+			'*' { respond torneoRegistracionInstance, [status: CREATED] }
+		}
+	}
 
     def edit(TorneoRegistracion torneoRegistracionInstance) {
         respond torneoRegistracionInstance

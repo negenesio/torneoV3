@@ -60,17 +60,14 @@ class LoginController {
 			
 			def mensaje = ""
 			flash.params = [error:mensaje, info:mensaje]
-			println "PARAMS 1: " +flash.params
 		}
 		def config = SpringSecurityUtils.securityConfig
 
 		if (springSecurityService.isLoggedIn()) {
-			println "PARAMS 2: "+flash.params
 			redirect uri: config.successHandler.defaultTargetUrl
 			return
 		}
 	
-		println "PARAMS 3: " +flash.params
 		String view = 'auth'
 		String postUrl = "${request.contextPath}${config.apf.filterProcessesUrl}"
 		render view: view, model: [postUrl: postUrl,
@@ -115,36 +112,28 @@ class LoginController {
 
 		String msg = ''
 		def exception = session[WebAttributes.AUTHENTICATION_EXCEPTION]
-		println"SESSION: "+session
 		if (exception) {
 			if (exception instanceof AccountExpiredException) {
-				println "Usuario Expirada"
 				msg = g.message(code: "springSecurity.errors.login.expired")
 			}
 			else if (exception instanceof CredentialsExpiredException) {
 				def mensaje = 'Debe realizar un cambio de Contraseña.'
 				flash.params = [error:mensaje, nuevoCodigo:"si"]
-				println "Clave Expirada"
 				redirect action:"auth", controller:"login"
 				return
 			}
 			else if (exception instanceof DisabledException) {
 				def mensaje = 'El usuario se encuentra desabilitado, Verifique su email para activar su cuenta o Solicite un nuevo Codigo'
 				flash.params = [error:mensaje, nuevoCodigo:"si"]
-				println "Usuario Desactivado"
 				redirect action:"auth", controller:"login"
 				return
 			}
 			else if (exception instanceof LockedException) {
-				println "Usuario Bloqueado"
 				msg = g.message(code: "springSecurity.errors.login.locked")
-				println "Usuario Bloqueado"
 			}
 			else {
-				println "Login Incorrecto"
 				def mensaje = 'Login incorrecto. Verifique sus credenciales.'
 				flash.params = [error:mensaje]
-				println "Login Incorrecto"
 				redirect action:"auth", controller:"login"					
 				return
 			}
@@ -156,7 +145,6 @@ class LoginController {
 		else {
 			def mensaje = 'Login incorrecto. Verifique sus credenciales.'
 			flash.params = [error:mensaje]
-			println "Login Incorrecto"
 			redirect action:"auth", controller:"login"
 			return
 		}

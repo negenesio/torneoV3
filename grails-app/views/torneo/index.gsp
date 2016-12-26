@@ -28,13 +28,13 @@
 					
 						<g:sortableColumn property="cantidadPlayer" title="${message(code: 'torneo.cantidadPlayer.label', default: 'Cantidad Player')}" />
 					
+						<g:sortableColumn property="cantidadRegistrados" title="${message(code: 'torneo.cantidadRegistrados.label', default: 'Cantidad Registrados')}" />
+					
 						<g:sortableColumn property="descripcion" title="${message(code: 'torneo.descripcion.label', default: 'Descripcion')}" />
 					
+						<g:sortableColumn property="enabled" title="${message(code: 'torneo.enabled.label', default: 'Enabled')}" />
+					
 						<g:sortableColumn property="fechaCreacion" title="${message(code: 'torneo.fechaCreacion.label', default: 'Fecha Creacion')}" />
-					
-						<g:sortableColumn property="nombre" title="${message(code: 'torneo.nombre.label', default: 'Nombre')}" />
-					
-						<th><g:message code="torneo.owner.label" default="Owner" /></th>
 					
 					</tr>
 				</thead>
@@ -46,13 +46,13 @@
 					
 						<td>${fieldValue(bean: torneoInstance, field: "cantidadPlayer")}</td>
 					
+						<td>${fieldValue(bean: torneoInstance, field: "cantidadRegistrados")}</td>
+					
 						<td>${fieldValue(bean: torneoInstance, field: "descripcion")}</td>
 					
+						<td><g:formatBoolean boolean="${torneoInstance.enabled}" /></td>
+					
 						<td><g:formatDate date="${torneoInstance.fechaCreacion}" /></td>
-					
-						<td>${fieldValue(bean: torneoInstance, field: "nombre")}</td>
-					
-						<td>${fieldValue(bean: torneoInstance, field: "owner")}</td>
 					
 					</tr>
 				</g:each>

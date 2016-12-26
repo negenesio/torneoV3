@@ -5,6 +5,7 @@ package com.torneo.fifa
 import static org.springframework.http.HttpStatus.*
 import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
+import com.torneo.fifa.Player
 
 @Transactional(readOnly = true)
 
@@ -30,7 +31,6 @@ class TorneoController {
 			def mensaje = ""
 			flash.params = [error:mensaje, info:mensaje]
 		}
-        respond new Torneo(params)
     }
 
 	@Secured(['IS_AUTHENTICATED_FULLY'])
@@ -119,55 +119,67 @@ class TorneoController {
 	
 	@Secured(['IS_AUTHENTICATED_FULLY'])
 	def registracionTorneo() {
-		 
-		if(!flash.params){
-			def mensaje = ""
-			flash.params = [error:mensaje, info:mensaje]
+		def criteria = Player.createCriteria()
+		def player_lista = criteria.list(){
+			eq('enabled', true)
 		}
-		if(flash.params.id != null){
-			Torneo torneoInstance = Torneo.findById(flash.params.id)
-			def criteria = Player.createCriteria()
-			
-			def player_lista = criteria.list(){
-				eq('enabled', true)
-			}
-			model:[torneoInstance:torneoInstance, player_lista:player_lista]
-		}else{
-			flash.params = [error:"Primero debe crear un torneo."]
-			redirect action:"create"
-		}
+		def cantidadPlayer = params.int('cantidadPlayer')
+		def descripcion = params.descripcion
+		def nombre = params.nombre
+		def password = params.password
 		
+		
+		[cantidadPlayer:cantidadPlayer, player_lista:player_lista, password:password, nombre:nombre, descripcion:descripcion]
     }
 	
-	@Secured(['IS_AUTHENTICATED_FULLY'])
 	
+	@Secured(['IS_AUTHENTICATED_FULLY'])
 	def publicarTorneo(){
 		
-		List<Player> players = []
-		def lista_player = params.list('playerInvitacion')
-		println "TAMAÑO: "+lista_player.size()
-		lista_player.each { player ->
-			if(player != 'null'){
-				println player
-				players << Player.findById(player)
-			}						
+		def criteria = Player.createCriteria()
+		def player_lista = criteria.list{
+			inList('id', params.playerInvitacion.collect { it.toLong() })
 		}
-		TorneoRegistracion torneoRegistracion = new TorneoRegistracion()
-		torneoRegistracion.players = players
-		torneoRegistracion.torneo = Torneo.findById(params.torneoInstance)
-		torneoRegistracion.cantidadRegistrados = players.size()
+		Torneo torneo = new Torneo()
+		torneo.nombre = params.nombre
+		torneo.descripcion = params.descripcion
+		torneo.cantidadPlayer = player_lista.size()
+		torneo.password = params.password
 		
-		if(lista_player.size() == players.size()){
-			torneoRegistracion.enabled = true
-		}else{
-			torneoRegistracion.enabled = false
+		Player owner = Player.findById(params.owner.toLong())
+		
+		torneo.owner = owner
+		torneo.players = player_lista
+		torneo.cantidadPlayer = params.cantidadPlayer
+		if(torneo.cantidadPlayer == torneo.cantidadRegistrados){
+			torneo.enabled = true
 		}
-		torneoRegistracionController.save(torneoRegistracion)
 		
+		torneo.save flush:true
+		redirect action:'indexPlayer', controller:'player'
 	}
-	
+//		
+//		List<Player> players = []
+//		def lista_player = params.list('playerInvitacion')
+//		lista_player.each { player ->
+//			if(player != 'null'){
+//				players << Player.findById(player)
+//			}						
+//		}
+//		TorneoRegistracion torneoRegistracion = new TorneoRegistracion()
+//		torneoRegistracion.players = players
+//		torneoRegistracion.torneo = Torneo.findById(params.torneoInstance)
+//		torneoRegistracion.cantidadRegistrados = players.size()
+//		
+//		if(lista_player.size() == players.size()){
+//			torneoRegistracion.enabled = true
+//		}else{
+//			torneoRegistracion.enabled = false
+//		}
+//		torneoRegistracionController.save(torneoRegistracion)
+//		
+//	}
 	@Secured(['IS_AUTHENTICATED_FULLY'])
-	def verificarParticipantes(){
-		
+	def generarPlayers(){
 	}
 }
